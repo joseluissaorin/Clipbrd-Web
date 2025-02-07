@@ -10,58 +10,62 @@ import config from "@/config";
 
 const links = [
   {
-    href: "/#pricing",
-    label: "Pricing",
+    href: "/#features",
+    label: "Features",
   },
   {
-    href: "/#testimonials",
-    label: "Reviews",
+    href: "/#pricing",
+    label: "Pricing",
   },
   {
     href: "/#faq",
     label: "FAQ",
   },
+  {
+    href: "/privacy-policy",
+    label: "Privacy",
+  },
 ];
 
-const cta = <ButtonSignin extraStyle="btn-primary" />;
+const cta = <ButtonSignin text="Get Started" extraStyle="btn-primary" />;
 
-// A header with a logo on the left, links in the center (like Pricing, etc...), and a CTA (like Get Started or Login) on the right.
-// The header is responsive, and on mobile, the links are hidden behind a burger button.
 const Header = () => {
   const searchParams = useSearchParams();
   const [isOpen, setIsOpen] = useState(false);
 
-  // setIsOpen(false) when the route changes (i.e: when the user clicks on a link on mobile)
   useEffect(() => {
     setIsOpen(false);
   }, [searchParams]);
 
   return (
-    <header className="bg-base-200">
+    <header className="bg-base-100">
       <nav
         className="container flex items-center justify-between px-8 py-4 mx-auto"
         aria-label="Global"
       >
-        {/* Your logo/name on large screens */}
+        {/* Logo/name */}
         <div className="flex lg:flex-1">
           <Link
-            className="flex items-center gap-2 shrink-0 "
+            className="flex items-center gap-3 shrink-0"
             href="/"
-            title={`${config.appName} hompage`}
+            title={`${config.appName} homepage`}
           >
-            <Image
-              src={logo}
-              alt={`${config.appName} logo`}
-              className="w-8"
-              placeholder="blur"
-              priority={true}
-              width={32}
-              height={32}
-            />
+            <div className="relative w-12 h-12 rounded-xl bg-primary/5 flex items-center justify-center shadow-[0_0_15px_-5px_rgba(98,216,255,0.3)]">
+              <Image
+                src={logo}
+                alt={`${config.appName} logo`}
+                className="w-10 h-10"
+                placeholder="blur"
+                priority={true}
+                width={40}
+                height={40}
+              />
+            </div>
             <span className="font-extrabold text-lg">{config.appName}</span>
           </Link>
         </div>
-        {/* Burger button to open menu on mobile */}
+
+        {/* Burger button */}
         <div className="flex lg:hidden">
           <button
             type="button"
@@ -86,13 +90,13 @@ const Header = () => {
           </button>
         </div>
 
-        {/* Your links on large screens */}
+        {/* Desktop navigation */}
         <div className="hidden lg:flex lg:justify-center lg:gap-12 lg:items-center">
           {links.map((link) => (
             <Link
               href={link.href}
               key={link.href}
-              className="link link-hover"
+              className="link link-hover text-base-content/80 hover:text-base-content"
               title={link.label}
             >
               {link.label}
@@ -100,78 +104,78 @@ const Header = () => {
           ))}
         </div>
 
-        {/* CTA on large screens */}
+        {/* Desktop CTA */}
         <div className="hidden lg:flex lg:justify-end lg:flex-1">{cta}</div>
-      </nav>
 
-      {/* Mobile menu, show/hide based on menu state. */}
-      <div className={`relative z-50 ${isOpen ? "" : "hidden"}`}>
-        <div
-          className={`fixed inset-y-0 right-0 z-10 w-full px-8 py-4 overflow-y-auto bg-base-200 sm:max-w-sm sm:ring-1 sm:ring-neutral/10 transform origin-right transition ease-in-out duration-300`}
-        >
-          {/* Your logo/name on small screens */}
-          <div className="flex items-center justify-between">
-            <Link
-              className="flex items-center gap-2 shrink-0 "
-              title={`${config.appName} hompage`}
-              href="/"
-            >
-              <Image
-                src={logo}
-                alt={`${config.appName} logo`}
-                className="w-8"
-                placeholder="blur"
-                priority={true}
-                width={32}
-                height={32}
-              />
-              <span className="font-extrabold text-lg">{config.appName}</span>
-            </Link>
-            <button
-              type="button"
-              className="-m-2.5 rounded-md p-2.5"
-              onClick={() => setIsOpen(false)}
-            >
-              <span className="sr-only">Close menu</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-6 h-6"
+        {/* Mobile menu */}
+        <div className={`relative z-50 ${isOpen ? "" : "hidden"}`}>
+          <div className="fixed inset-y-0 right-0 z-10 w-full px-8 py-4 overflow-y-auto bg-base-100 sm:max-w-sm sm:ring-1 sm:ring-neutral/10">
+            {/* Mobile logo/name */}
+            <div className="flex items-center justify-between">
+              <Link
+                className="flex items-center gap-3 shrink-0"
+                href="/"
+                title={`${config.appName} homepage`}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-          </div>
-
-          {/* Your links on small screens */}
-          <div className="flow-root mt-6">
-            <div className="py-4">
-              <div className="flex flex-col gap-y-4 items-start">
-                {links.map((link) => (
-                  <Link
-                    href={link.href}
-                    key={link.href}
-                    className="link link-hover"
-                    title={link.label}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
+                <div className="relative w-12 h-12 rounded-xl bg-primary/5 flex items-center justify-center shadow-[0_0_15px_rgba(98,216,255,0.3)]">
+                  <Image
+                    src={logo}
+                    alt={`${config.appName} logo`}
+                    className="w-10 h-10"
+                    placeholder="blur"
+                    priority={true}
+                    width={40}
+                    height={40}
+                  />
+                </div>
+                <span className="font-extrabold text-lg">{config.appName}</span>
+              </Link>
+              <button
+                type="button"
+                className="-m-2.5 rounded-md p-2.5"
+                onClick={() => setIsOpen(false)}
+              >
+                <span className="sr-only">Close menu</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
             </div>
-            <div className="divider"></div>
-            {/* Your CTA on small screens */}
-            <div className="flex flex-col">{cta}</div>
+
+            {/* Mobile links */}
+            <div className="flow-root mt-6">
+              <div className="py-4">
+                <div className="flex flex-col gap-y-4 items-start">
+                  {links.map((link) => (
+                    <Link
+                      href={link.href}
+                      key={link.href}
+                      className="link link-hover text-base-content/80 hover:text-base-content"
+                      title={link.label}
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+              <div className="divider"></div>
+              {/* Mobile CTA */}
+              <div className="flex flex-col">{cta}</div>
+            </div>
           </div>
         </div>
-      </div>
+      </nav>
     </header>
   );
 };

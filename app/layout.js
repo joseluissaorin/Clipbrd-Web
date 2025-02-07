@@ -1,33 +1,35 @@
 import { Inter } from "next/font/google";
-import { getSEOTags } from "@/libs/seo";
-import ClientLayout from "@/components/LayoutClient";
-import config from "@/config";
 import "./globals.css";
+import Script from "next/script";
 
-const font = Inter({ subsets: ["latin"] });
-
-export const viewport = {
-	// Will use the primary color of your theme to show a nice theme color in the URL bar of supported browsers
-	themeColor: config.colors.main,
-	width: "device-width",
-	initialScale: 1,
-};
-
-// This adds default SEO tags to all pages in our app.
-// You can override them in each page passing params to getSOTags() function.
-export const metadata = getSEOTags();
+const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({ children }) {
 	return (
-		<html
-			lang="en"
-			data-theme={config.colors.theme}
-			className={font.className}
-		>
-			<body>
-				{/* ClientLayout contains all the client wrappers (Crisp chat support, toast messages, tooltips, etc.) */}
-				<ClientLayout>{children}</ClientLayout>
-			</body>
+		<html lang="en" data-theme="clipbrd">
+			<head>
+				<link rel="icon" type="image/png" href="/favicon.png" />
+				<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+				<Script
+					async
+					src={process.env.NEXT_PUBLIC_UMAMI_URL + "/script.js"}
+					data-website-id={process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID}
+					strategy="afterInteractive"
+				/>
+				<Script
+					defer
+					data-domain="clipbrdapp.com"
+					src="https://analytics.joseluissaorin.com/js/script.js"
+					strategy="afterInteractive"
+				/>
+			</head>
+			<body className={inter.className}>{children}</body>
 		</html>
 	);
 }
+
+export const metadata = {
+	metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://www.clipbrdapp.com'),
+	title: "Clipbrd - Your AI-Powered Study Companion",
+	description: "Transform your learning experience with intelligent clipboard management",
+};

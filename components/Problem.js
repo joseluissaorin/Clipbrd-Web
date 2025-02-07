@@ -41,26 +41,97 @@ const Step = ({ emoji, text }) => {
 // - Features: "ShipFast has user auth, Stripe, emails all set up for you"
 const Problem = () => {
   return (
-    <section className="bg-neutral text-neutral-content">
-      <div className="max-w-7xl mx-auto px-8 py-16 md:py-32 text-center">
-        <h2 className="max-w-3xl mx-auto font-extrabold text-4xl md:text-5xl tracking-tight mb-6 md:mb-8">
-          80% of startups fail because founders never launch
-        </h2>
-        <p className="max-w-xl mx-auto text-lg opacity-90 leading-relaxed mb-12 md:mb-20">
-          Emails, DNS records, user authentication... There&apos;s so much going
-          on.
-        </p>
+    <section className="max-w-7xl mx-auto bg-base-100 flex flex-col lg:flex-row items-center justify-center gap-16 lg:gap-20 px-8 py-8 lg:py-20">
+      <div className="flex flex-col gap-10 lg:gap-14 items-center lg:items-start text-center lg:text-left lg:w-1/2">
+        <div>
+          <h2 className="font-extrabold text-3xl lg:text-4xl tracking-tight mb-4">
+            Study Smarter, Not Harder
+          </h2>
+          <p className="text-base-content/80 text-lg leading-relaxed">
+            Traditional studying is time-consuming and inefficient. You spend hours searching through notes, textbooks, and online resources to find answers. Clipbrd changes that by bringing AI-powered assistance right to your clipboard.
+          </p>
+        </div>
 
-        <div className="flex flex-col md:flex-row justify-center items-center md:items-start gap-6">
-          <Step emoji="🧑‍💻" text="8 hrs to add Stripe" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full place-items-center md:place-items-start">
+          <div className="flex flex-col gap-3 items-center md:items-start text-center md:text-left">
+            <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center shadow-[0_0_12px_rgba(98,216,255,0.2)]">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-primary">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
+              </svg>
+            </div>
+            <h3 className="font-bold text-xl">Instant Access</h3>
+            <p className="text-base-content/70">
+              No more flipping through pages or searching multiple tabs. Get answers instantly from your study materials.
+            </p>
+          </div>
 
-          <Arrow extraStyle="max-md:-scale-x-100 md:-rotate-90" />
+          <div className="flex flex-col gap-3 items-center md:items-start text-center md:text-left">
+            <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center shadow-[0_0_12px_rgba(98,216,255,0.2)]">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-primary">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
+              </svg>
+            </div>
+            <h3 className="font-bold text-xl">Smart Context</h3>
+            <p className="text-base-content/70">
+              Clipbrd understands your study context and provides relevant answers based on your notes and materials.
+            </p>
+          </div>
 
-          <Step emoji="😮‍💨" text="Struggle to find time" />
+          <div className="flex flex-col gap-3 items-center md:items-start text-center md:text-left">
+            <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center shadow-[0_0_12px_rgba(98,216,255,0.2)]">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-primary">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
+              </svg>
+            </div>
+            <h3 className="font-bold text-xl">Image Support</h3>
+            <p className="text-base-content/70">
+              Works with both text and images. Screenshot a question and get instant help.
+            </p>
+          </div>
 
-          <Arrow extraStyle="md:-scale-x-100 md:-rotate-90" />
+          <div className="flex flex-col gap-3 items-center md:items-start text-center md:text-left">
+            <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center shadow-[0_0_12px_rgba(98,216,255,0.2)]">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-primary">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+              </svg>
+            </div>
+            <h3 className="font-bold text-xl">Privacy First</h3>
+            <p className="text-base-content/70">
+              Open source and transparent. Your study data stays private and secure.
+            </p>
+          </div>
+        </div>
+      </div>
 
-          <Step emoji="😔" text="Quit project" />
+      <div className="lg:w-1/2">
+        <div className="relative">
+          <div className="bg-gradient-to-r from-primary to-secondary p-1 rounded-3xl shadow-[0_8px_25px_rgba(98,216,255,0.25)]">
+            <div className="bg-base-100 p-8 rounded-[1.35rem]">
+              <div className="space-y-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-8 h-8 bg-primary/10 rounded-xl flex items-center justify-center shadow-[0_0_8px_rgba(98,216,255,0.15)]">
+                    <span className="text-primary">Q</span>
+                  </div>
+                  <p className="text-base-content/80">What is the difference between DNA and RNA?</p>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="w-8 h-8 bg-secondary/10 rounded-xl flex items-center justify-center shadow-[0_0_8px_rgba(98,216,255,0.15)]">
+                    <span className="text-secondary">A</span>
+                  </div>
+                  <div className="space-y-2 flex-1">
+                    <p className="text-base-content/80">Based on your notes, here are the key differences:</p>
+                    <ul className="list-disc list-inside text-base-content/70 space-y-1">
+                      <li>DNA is double-stranded, RNA is single-stranded</li>
+                      <li>DNA uses thymine, RNA uses uracil</li>
+                      <li>DNA stores genetic information, RNA helps express it</li>
+                      <li>DNA is found in nucleus, RNA in nucleus and cytoplasm</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

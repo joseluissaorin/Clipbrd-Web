@@ -1,37 +1,74 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/libs/supabase/server";
-import { createCustomerPortal } from "@/libs/stripe";
+import Stripe from "stripe";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: "2023-08-16",
+});
 
 export async function POST(req) {
   try {
     const supabase = createClient();
 
-    const body = await req.json();
-
+    // Get user from Supabase
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
-    // User who are not logged in can't make a purchase
     if (!user) {
       return NextResponse.json(
         { error: "You must be logged in to view billing information." },
         { status: 401 }
       );
-    } else if (!body.returnUrl) {
+    }
+
+    // Get user's profile with customer ID
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", user.id)
+      .single();
+
+    if (profileError) {
+      console.error("Error fetching profile:", profileError);
       return NextResponse.json(
-        { error: "Return URL is required" },
-        { status: 400 }
+        { error: "Error fetching user profile" },
+        { status: 500 }
       );
     }
 
-    const { data } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", user?.id)
-      .single();
+    console.log('Profile data:', profile);
 
-    if (!data?.customer_id) {
+    // If no customer_id in profile, try to find it in Stripe
+    if (!profile?.customer_id) {
+      try {
+        // Search for customer in Stripe by email
+        const customers = await stripe.customers.list({
+          email: user.email,
+          limit: 1
+        });
+
+        if (customers.data.length > 0) {
+          const customer = customers.data[0];
+          
+          // Update profile with found customer_id
+          const { error: updateError } = await supabase
+            .from("profiles")
+            .update({ customer_id: customer.id })
+            .eq("id", user.id);
+
+          if (updateError) {
+            console.error("Error updating profile with customer_id:", updateError);
+          }
+
+          profile.customer_id = customer.id;
+        }
+      } catch (stripeError) {
+        console.error("Error searching Stripe customer:", stripeError);
+      }
+    }
+
+    if (!profile?.customer_id) {
       return NextResponse.json(
         {
           error: "You don't have a billing account yet. Make a purchase first.",
@@ -40,16 +77,22 @@ export async function POST(req) {
       );
     }
 
-    const stripePortalUrl = await createCustomerPortal({
-      customerId: data.customer_id,
-      returnUrl: body.returnUrl,
+    // Get the base URL with proper scheme
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.clipbrdapp.com';
+    const returnUrl = new URL('/dashboard', baseUrl).toString();
+
+    // Create Stripe billing portal session
+    const session = await stripe.billingPortal.sessions.create({
+      customer: profile.customer_id,
+      return_url: returnUrl,
     });
 
-    return NextResponse.json({
-      url: stripePortalUrl,
-    });
-  } catch (e) {
-    console.error(e);
-    return NextResponse.json({ error: e?.message }, { status: 500 });
+    return NextResponse.json({ url: session.url });
+  } catch (error) {
+    console.error("Error creating portal session:", error);
+    return NextResponse.json(
+      { error: "Error creating billing portal session" },
+      { status: 500 }
+    );
   }
 }

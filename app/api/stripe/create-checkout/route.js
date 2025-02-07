@@ -2,7 +2,7 @@ import { createCheckout } from "@/libs/stripe";
 import { createClient } from "@/libs/supabase/server";
 import { NextResponse } from "next/server";
 
-// This function is used to create a Stripe Checkout Session (one-time payment or subscription)
+// This function is used to create a Stripe Checkout Session (subscription)
 // It's called by the <ButtonCheckout /> component
 // Users must be authenticated. It will prefill the Checkout data with their email and/or credit card (if any)
 export async function POST(req) {
@@ -18,14 +18,6 @@ export async function POST(req) {
       { error: "Success and cancel URLs are required" },
       { status: 400 }
     );
-  } else if (!body.mode) {
-    return NextResponse.json(
-      {
-        error:
-          "Mode is required (either 'payment' for one-time payments or 'subscription' for recurring subscription)",
-      },
-      { status: 400 }
-    );
   }
 
   try {
@@ -35,7 +27,7 @@ export async function POST(req) {
       data: { user },
     } = await supabase.auth.getUser();
 
-    const { priceId, mode, successUrl, cancelUrl } = body;
+    const { priceId, successUrl, cancelUrl } = body;
 
     const { data } = await supabase
       .from("profiles")
@@ -45,7 +37,7 @@ export async function POST(req) {
 
     const stripeSessionURL = await createCheckout({
       priceId,
-      mode,
+      mode: "subscription", // Always use subscription mode for Clipbrd
       successUrl,
       cancelUrl,
       // If user is logged in, it will pass the user ID to the Stripe Session so it can be retrieved in the webhook later

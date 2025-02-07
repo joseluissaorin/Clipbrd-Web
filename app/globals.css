@@ -2,6 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Add animation classes */
+.animate-in {
+  @apply opacity-100 blur-none translate-y-0;
+}
+
+/* Bottom blur overlay */
+.blur-overlay {
+  @apply fixed bottom-0 left-0 right-0 h-[5vh] pointer-events-none z-50 opacity-0;
+  mask-image: linear-gradient(to bottom, transparent, black);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black);
+  backdrop-filter: blur(4px);
+  transition: opacity 400ms ease-in, opacity 800ms ease-out;
+}
+
+.blur-overlay.visible {
+  @apply opacity-100;
+  transition: opacity 400ms ease-in;
+}
+
 html,
 body {
   scroll-behavior: smooth !important;

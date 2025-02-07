@@ -5,6 +5,7 @@ const mailgun = new Mailgun(formData);
 
 const mg = mailgun.client({
   username: "api",
+  url: "https://api.eu.mailgun.net/",
   key: process.env.MAILGUN_API_KEY || "dummy",
 });
 

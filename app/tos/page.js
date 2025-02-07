@@ -57,39 +57,32 @@ const TOS = () => {
           className="leading-relaxed whitespace-pre-wrap"
           style={{ fontFamily: "sans-serif" }}
         >
-          {`Last Updated: September 26, 2023
+          {`**Terms & Services**  
+*Effective Date: October 13, 2024*
 
-Welcome to ShipFast!
+Welcome to Clipbrd. By using the Clipbrd software or any services provided through our website (https://clipbrdapp.com), you agree to comply with and be bound by the following Terms & Services.
 
-These Terms of Service ("Terms") govern your use of the ShipFast website at https://shipfa.st ("Website") and the services provided by ShipFast. By using our Website and services, you agree to these Terms.
+### 1. Ownership and License  
+Clipbrd is an AI-driven clipboard manager. While your subscription is active, you are granted a key to register and use the program. You may not distribute, resell, or transfer the program or registration key to any third party.
 
-1. Description of ShipFast
+### 2. User Data  
+We collect your name, email, and payment information to provide our services. For further details on how we handle your personal data, please refer to our Privacy Policy at [https://clipbrdapp.com/privacy-policy](https://clipbrdapp.com/privacy-policy).
 
-ShipFast is a platform that offers a JavaScript code boilerplate to assist entrepreneurs in launching their startups more efficiently.
+### 3. Non-Personal Data  
+We collect non-personal data, such as web cookies, to improve the user experience and for analytical purposes.
 
-2. Ownership and Usage Rights
+### 4. Termination  
+We reserve the right to terminate your access to Clipbrd in the event of any violation of these terms.
 
-When you purchase a package from ShipFast, you gain the right to download and use the code provided for creating applications. You own the code you create but do not have the right to resell it. We offer a full refund within 7 days of purchase, as specified in our refund policy.
+### 5. Governing Law  
+These Terms & Services are governed by the laws of Spain.
 
-3. User Data and Privacy
+### 6. Updates  
+We may update these terms from time to time. Any changes will be communicated to you by email.
 
-We collect and store user data, including name, email, and payment information, as necessary to provide our services. For details on how we handle your data, please refer to our Privacy Policy at https://shipfa.st/privacy-policy.
+For any questions or concerns, please contact us at jl@clipbrdapp.com.
 
-4. Non-Personal Data Collection
-
-We use web cookies to collect non-personal data for the purpose of improving our services and user experience.
-
-5. Governing Law
-
-These Terms are governed by the laws of France.
-
-6. Updates to the Terms
-
-We may update these Terms from time to time. Users will be notified of any changes via email.
-
-For any questions or concerns regarding these Terms of Service, please contact us at marc@shipfa.st.
-
-Thank you for using ShipFast!`}
+Thank you for using Clipbrd!`}
         </pre>
       </div>
     </main>
