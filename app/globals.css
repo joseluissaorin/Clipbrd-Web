@@ -12,18 +12,28 @@
   @apply fixed bottom-0 left-0 right-0 h-[5vh] pointer-events-none z-50 opacity-0;
   mask-image: linear-gradient(to bottom, transparent, black);
   -webkit-mask-image: linear-gradient(to bottom, transparent, black);
-  backdrop-filter: blur(4px);
-  transition: opacity 400ms ease-in, opacity 800ms ease-out;
+  backdrop-filter: blur(2px);
+  transition: opacity 300ms ease-in, opacity 500ms ease-out;
 }
 
 .blur-overlay.visible {
   @apply opacity-100;
-  transition: opacity 400ms ease-in;
+  transition: opacity 300ms ease-in;
 }
 
-html,
-body {
-  scroll-behavior: smooth !important;
+/* Disable smooth scroll on mobile */
+@media (min-width: 768px) {
+  html,
+  body {
+    scroll-behavior: smooth !important;
+  }
+}
+
+/* Optimize backdrop filters for mobile */
+@media (max-width: 767px) {
+  .blur-overlay {
+    backdrop-filter: blur(1px);
+  }
 }
 
 /* It makes the HTML progress bar filling smooth when value change. */
@@ -37,5 +47,29 @@ progress::-webkit-progress-value {
   }
   .btn {
     @apply !capitalize;
+  }
+}
+
+@keyframes ripple {
+  from {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 1;
+  }
+  to {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+  }
+}
+
+/* Optimize ripple animation for mobile */
+@media (max-width: 767px) {
+  .animate-ripple {
+    animation: ripple 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+}
+
+@media (min-width: 768px) {
+  .animate-ripple {
+    animation: ripple 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   }
 }
