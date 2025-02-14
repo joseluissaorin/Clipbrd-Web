@@ -2,6 +2,8 @@ import { createCheckout } from "@/libs/stripe";
 import { createClient } from "@/libs/supabase/server";
 import { NextResponse } from "next/server";
 
+export const runtime = 'edge';
+
 // This function is used to create a Stripe Checkout Session (subscription)
 // It's called by the <ButtonCheckout /> component
 // Users must be authenticated. It will prefill the Checkout data with their email and/or credit card (if any)
@@ -27,12 +29,19 @@ export async function POST(req) {
       data: { user },
     } = await supabase.auth.getUser();
 
+    if (!user) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
     const { priceId, successUrl, cancelUrl } = body;
 
     const { data } = await supabase
       .from("profiles")
       .select("*")
-      .eq("id", user?.id)
+      .eq("id", user.id)
       .single();
 
     const stripeSessionURL = await createCheckout({
@@ -41,7 +50,7 @@ export async function POST(req) {
       successUrl,
       cancelUrl,
       // If user is logged in, it will pass the user ID to the Stripe Session so it can be retrieved in the webhook later
-      clientReferenceId: user?.id,
+      clientReferenceId: user.id,
       user: {
         email: data?.email,
         // If the user has already purchased, it will automatically prefill it's credit card
@@ -54,6 +63,9 @@ export async function POST(req) {
     return NextResponse.json({ url: stripeSessionURL });
   } catch (e) {
     console.error(e);
-    return NextResponse.json({ error: e?.message }, { status: 500 });
+    return NextResponse.json(
+      { error: e?.message || "Internal server error" },
+      { status: 500 }
+    );
   }
 }

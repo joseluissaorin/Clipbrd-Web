@@ -26,8 +26,6 @@ const useMediaQuery = (query) => {
 // Cursor follower component - disabled on mobile
 const CursorGlow = () => {
   const isMobile = useMediaQuery('(max-width: 768px)');
-  if (isMobile) return null;
-
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
   
@@ -36,13 +34,17 @@ const CursorGlow = () => {
   const cursorYSpring = useSpring(cursorY, springConfig);
 
   useEffect(() => {
+    if (isMobile) return;
+    
     const moveCursor = (e) => {
       cursorX.set(e.clientX - 150);
       cursorY.set(e.clientY - 150);
     };
     window.addEventListener('mousemove', moveCursor);
     return () => window.removeEventListener('mousemove', moveCursor);
-  }, [cursorX, cursorY]);
+  }, [cursorX, cursorY, isMobile]);
+
+  if (isMobile) return null;
 
   return (
     <motion.div

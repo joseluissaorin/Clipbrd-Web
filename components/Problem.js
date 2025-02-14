@@ -36,10 +36,19 @@ const useMediaQuery = (query) => {
 
 const ParticleSystem = () => {
   const isMobile = useMediaQuery('(max-width: 768px)');
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   // Reduce number of particles on mobile
   const particles = Array.from({ length: isMobile ? 10 : 30 });
   
-  if (isMobile) return null; // Don't render particles on mobile
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    setDimensions({
+      width: window.innerWidth,
+      height: window.innerHeight
+    });
+  }, []);
+  
+  if (isMobile || dimensions.width === 0) return null; // Don't render particles on mobile or during SSR
   
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -48,8 +57,8 @@ const ParticleSystem = () => {
           key={i}
           className="absolute rounded-full"
           initial={{ 
-            x: Math.random() * window.innerWidth,
-            y: Math.random() * window.innerHeight,
+            x: Math.random() * dimensions.width,
+            y: Math.random() * dimensions.height,
             scale: Math.random() * 0.5 + 0.5,
             opacity: Math.random() * 0.3 + 0.1
           }}
@@ -219,6 +228,7 @@ const FeatureCard = ({ icon, title, description, index }) => {
 const Problem = () => {
   const { scrollYProgress } = useScroll();
   const containerRef = useRef(null);
+  const isMobile = useMediaQuery('(max-width: 768px)');
   
   const features = [
     {
@@ -282,7 +292,7 @@ const Problem = () => {
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
   return (
-    <section className="relative bg-base-100/20 py-16 md:py-32 overflow-hidden" id="problem">
+    <section className={`relative w-full ${isMobile ? 'py-8' : 'py-16'} overflow-hidden`}>
       <ParticleSystem />
       
       <div className="absolute inset-0">

@@ -39,7 +39,7 @@ const faqList = [
     question: "Can I use it for exams?",
     answer: (
       <p className="text-base-content/80">
-        Clipbrd is designed as a study aid to help you learn and understand concepts better. Please check your institution's policies regarding the use of AI tools during exams.
+        Clipbrd is designed as a study aid to help you learn and understand concepts better. Please check your institution&apos;s policies regarding the use of AI tools during exams.
       </p>
     ),
     category: "general",
@@ -48,7 +48,7 @@ const faqList = [
     question: "How accurate are the answers?",
     answer: (
       <p className="text-base-content/80">
-        Clipbrd's answers are based on your own study materials, ensuring relevance to your course. The AI helps interpret and explain concepts but always references your source materials.
+        Clipbrd&apos;s answers are based on your own study materials, ensuring relevance to your course. The AI helps interpret and explain concepts but always references your source materials.
       </p>
     ),
     category: "features",
@@ -57,7 +57,7 @@ const faqList = [
     question: "What platforms are supported?",
     answer: (
       <p className="text-base-content/80">
-        Currently, Clipbrd is available for Windows. We're actively working on versions for macOS and Linux to be released soon.
+        Currently, Clipbrd is available for Windows. We&apos;re actively working on versions for macOS and Linux to be released soon.
       </p>
     ),
     category: "technical",
@@ -75,7 +75,7 @@ const faqList = [
     question: "Do you offer student discounts?",
     answer: (
       <p className="text-base-content/80">
-        Our €3.99/month pricing is already optimized for students. We keep it affordable to help as many students as possible improve their learning experience.
+        Our &euro;3.99/month pricing is already optimized for students. We keep it affordable to help as many students as possible improve their learning experience.
       </p>
     ),
     category: "pricing",
@@ -274,7 +274,7 @@ const FAQ = () => {
                     No questions found
                   </p>
                   <p className="text-sm text-base-content/60">
-                    Try adjusting your search or filter to find what you're looking for.
+                    Try adjusting your search or filter to find what you&apos;re looking for.
                   </p>
                 </div>
               </motion.div>

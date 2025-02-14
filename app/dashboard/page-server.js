@@ -2,7 +2,7 @@ import { createClient } from "@/libs/supabase/server";
 import { redirect } from "next/navigation";
 import Dashboard from "./page";
 import Stripe from "stripe";
-import { getLicenseData } from "@/libs/licenses";
+import { getLicenseData as getLicenseDataFromLib } from "@/libs/licenses";
 
 // Module level logging
 console.log('Loading dashboard server component...');
@@ -31,7 +31,7 @@ async function getProfileData(supabase, userId) {
   return profile;
 }
 
-async function getLicenseData(supabase, userId) {
+async function getUserLicenseData(supabase, userId) {
   console.log('Fetching license data for user:', userId);
   const { data: license, error: licenseError } = await supabase
     .from("licenses")
@@ -115,7 +115,7 @@ export default async function DashboardPage() {
 
   // Get all necessary data
   const profile = await getProfileData(supabase, user.id);
-  const license = await getLicenseData(user.id);
+  const license = await getUserLicenseData(supabase, user.id);
   const { customer_id, subscription } = await getStripeData(user.email, profile?.customer_id);
 
   // Update profile if customer_id was found

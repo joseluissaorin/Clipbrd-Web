@@ -18,8 +18,8 @@ const config = {
       {
         priceId:
           process.env.NODE_ENV === "development"
-            ? "price_1Q9TgG2NW4zJ1dDktPmoCvmO"
-            : "price_456",
+            ? "price_1QsC742NW4zJ1dDkNSlnP8YY"
+            : "price_1QsC742NW4zJ1dDkNSlnP8YY",
         name: "Monthly",
         description: "Transform your learning experience",
         price: 3.99,

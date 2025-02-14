@@ -11,7 +11,7 @@ export async function POST(req) {
   try {
     // Verify API key
     const apiKey = headers().get("X-API-Key");
-    if (!apiKey || !verifyApiKey(apiKey)) {
+    if (!apiKey || !(await verifyApiKey(apiKey))) {
       // Track failed API key verification
       await supabase.from('analytics_events').insert({
         event_type: 'license_verify_failed',

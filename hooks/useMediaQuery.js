@@ -3,36 +3,37 @@
 import { useState, useEffect } from 'react';
 
 const useMediaQuery = (query) => {
+  // During SSR, default to false
   const [matches, setMatches] = useState(false);
 
   useEffect(() => {
+    // Check if window is available (client-side)
     if (typeof window !== 'undefined') {
       const media = window.matchMedia(query);
       
-      const updateMatch = (e) => {
-        setMatches(e.matches);
-      };
-
       // Set initial value
       setMatches(media.matches);
 
-      // Add listener
-      if (media.addListener) {
-        media.addListener(updateMatch);
+      // Create event listener function
+      const listener = (e) => setMatches(e.matches);
+
+      // Use modern API if available, fallback for older browsers
+      if (media.addEventListener) {
+        media.addEventListener('change', listener);
       } else {
-        media.addEventListener('change', updateMatch);
+        media.addListener(listener);
       }
 
       // Cleanup
       return () => {
-        if (media.removeListener) {
-          media.removeListener(updateMatch);
+        if (media.removeEventListener) {
+          media.removeEventListener('change', listener);
         } else {
-          media.removeEventListener('change', updateMatch);
+          media.removeListener(listener);
         }
       };
     }
-  }, [query]);
+  }, [query]); // Only re-run if query changes
 
   return matches;
 };

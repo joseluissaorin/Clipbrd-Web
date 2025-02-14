@@ -7,7 +7,6 @@ import FAQ from "@/components/FAQ";
 import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
 import ScrollAnimation from "@/components/ScrollAnimation";
-import BlurOverlay from "@/components/BlurOverlay";
 
 export default function Home() {
   return (
@@ -33,7 +32,6 @@ export default function Home() {
         </ScrollAnimation>
       </main>
       <Footer />
-      <BlurOverlay />
     </>
   );
 }

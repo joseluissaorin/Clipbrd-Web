@@ -89,7 +89,7 @@ const CTACard = () => {
 
     rotateX.set(-rotateXValue);
     rotateY.set(rotateYValue);
-  }, [mousePosition, isHovered, isMobile]);
+  }, [mousePosition, isHovered, isMobile, rotateX, rotateY]);
 
   useEffect(() => {
     if (isHovered) {
@@ -101,7 +101,7 @@ const CTACard = () => {
       rotateX.set(0);
       rotateY.set(0);
     }
-  }, [isHovered]);
+  }, [isHovered, scale, brightness, rotateX, rotateY]);
 
   return (
     <motion.div

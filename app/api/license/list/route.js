@@ -1,8 +1,9 @@
-import { getUserLicenses } from "@/libs/licenses";
 import { createClient } from "@/libs/supabase/server";
 import { NextResponse } from "next/server";
 
-export async function GET(req) {
+export const runtime = 'edge';
+
+export async function GET() {
   try {
     const supabase = createClient();
 
@@ -12,18 +13,30 @@ export async function GET(req) {
 
     if (!user) {
       return NextResponse.json(
-        { error: "Authentication required" },
+        { error: "Unauthorized" },
         { status: 401 }
       );
     }
 
-    const licenses = await getUserLicenses(user.id);
+    const { data: licenses, error } = await supabase
+      .from("licenses")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching licenses:", error);
+      return NextResponse.json(
+        { error: "Error fetching licenses" },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json({ licenses });
   } catch (e) {
     console.error(e);
     return NextResponse.json(
-      { error: e?.message || "Error fetching licenses" },
+      { error: e?.message || "Internal server error" },
       { status: 500 }
     );
   }

@@ -48,21 +48,24 @@ export async function generateLicense(userId, subscriptionId, expiresAt = null) 
   const supabase = createClient();
   
   try {
-    // Generate a secure license key
-    const licenseKey = generateLicenseKey();
+    // Generate a secure license key and ensure it's long enough
+    let licenseKey;
+    do {
+      licenseKey = await generateLicenseKey();
+    } while (licenseKey.length < 10);
     
     // Hash the license key for storage
-    const hashedKey = hashString(licenseKey);
+    const hashedKey = await hashString(licenseKey);
     
     // Encrypt user-specific data
-    const userData = encrypt(JSON.stringify({
+    const userData = await encrypt(JSON.stringify({
       userId,
       subscriptionId,
       createdAt: new Date().toISOString()
     }));
 
     // Create signature for the license
-    const signature = signData({
+    const signature = await signData({
       key: licenseKey,
       userId,
       subscriptionId,
@@ -88,6 +91,12 @@ export async function generateLicense(userId, subscriptionId, expiresAt = null) 
       .single();
 
     if (error) throw error;
+
+    // Verify the generated license key length
+    if (data.display_key.length < 10) {
+      console.log('Generated license key too short, regenerating...');
+      return generateLicense(userId, subscriptionId, expiresAt);
+    }
 
     // Return the data with the display key
     return {
@@ -238,6 +247,122 @@ export async function getLicenseData(userId) {
     };
   } catch (error) {
     console.error("Error getting license data:", error);
+    throw error;
+  }
+}
+
+export async function fixInvalidLicense(userId, subscriptionId, expiresAt) {
+  const supabase = createClient();
+  
+  try {
+    console.log('Fixing invalid license for user:', { userId, subscriptionId });
+    
+    // Generate a new proper license key
+    let licenseKey;
+    do {
+      licenseKey = await generateLicenseKey();
+      console.log('Generated new license key:', licenseKey);
+    } while (licenseKey.length < 10);
+    
+    // Hash the license key for storage
+    const hashedKey = await hashString(licenseKey);
+    console.log('Generated hashed key');
+    
+    // Encrypt user-specific data
+    const userData = await encrypt(JSON.stringify({
+      userId,
+      subscriptionId,
+      createdAt: new Date().toISOString()
+    }));
+    console.log('Encrypted user data');
+
+    // Create signature for the license
+    const signature = await signData({
+      key: licenseKey,
+      userId,
+      subscriptionId,
+      expiresAt
+    });
+    console.log('Created signature');
+
+    // Update the existing license
+    const { data, error } = await supabase
+      .from('licenses')
+      .update({
+        key: hashedKey,
+        display_key: licenseKey,
+        encrypted_data: userData.encrypted,
+        iv: userData.iv,
+        auth_tag: userData.authTag,
+        signature,
+        expires_at: expiresAt
+      })
+      .eq('user_id', userId)
+      .eq('status', 'active')
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    console.log('Successfully fixed license:', {
+      id: data.id,
+      key: licenseKey,
+      display_key: licenseKey
+    });
+
+    // Return the data with the new key
+    return {
+      ...data,
+      key: licenseKey,
+      display_key: licenseKey
+    };
+  } catch (error) {
+    console.error("Error fixing license:", error);
+    throw error;
+  }
+}
+
+export async function checkAndFixLicense(userId, subscriptionId, expiresAt) {
+  const supabase = createClient();
+  
+  try {
+    console.log('Checking license for user:', { userId, subscriptionId });
+    
+    // Get current license
+    const { data: license, error } = await supabase
+      .from('licenses')
+      .select('*')
+      .eq('user_id', userId)
+      .eq('status', 'active')
+      .single();
+
+    if (error) {
+      if (error.code === 'PGRST116') {
+        // No license exists, create new one
+        console.log('No license found, generating new one');
+        return generateLicense(userId, subscriptionId, expiresAt);
+      }
+      throw error;
+    }
+
+    // Check if license key is invalid
+    if (!license.key || license.key === '{}' || license.display_key === '{}' || license.key.length < 10) {
+      console.log('Found invalid license, regenerating...', license);
+      return fixInvalidLicense(userId, subscriptionId, expiresAt);
+    }
+
+    console.log('License is valid:', {
+      id: license.id,
+      key: license.display_key,
+      display_key: license.display_key
+    });
+
+    return {
+      ...license,
+      key: license.display_key
+    };
+  } catch (error) {
+    console.error("Error checking license:", error);
     throw error;
   }
 } 

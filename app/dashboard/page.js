@@ -2,7 +2,7 @@ import { createClient } from "@/libs/supabase/server";
 import { redirect } from "next/navigation";
 import DashboardClient from "./client";
 import Stripe from "stripe";
-import { generateLicense } from "@/libs/licenses";
+import { generateLicense, checkAndFixLicense } from "@/libs/licenses";
 
 // This will log during server-side rendering
 console.log('=================== DASHBOARD PAGE RENDER START ===================');
@@ -112,7 +112,7 @@ export default async function DashboardPage() {
     // Get active license
     const { data: initialLicense, error: licenseError } = await supabase
       .from("licenses")
-      .select("id, key, display_key, status, expires_at, user_id, subscription_id")
+      .select("*")  // Changed to select all fields
       .eq("user_id", user.id)
       .eq("status", "active")
       .single();
@@ -121,15 +121,7 @@ export default async function DashboardPage() {
       console.error('License error:', licenseError);
     }
 
-    console.log('Initial license data:', {
-      id: initialLicense?.id,
-      key: initialLicense?.key,
-      display_key: initialLicense?.display_key,
-      status: initialLicense?.status,
-      expires_at: initialLicense?.expires_at,
-      user_id: initialLicense?.user_id,
-      subscription_id: initialLicense?.subscription_id
-    });
+    console.log('Initial license data:', initialLicense);
 
     let subscription = null;
     let customer_id = profile?.customer_id;
@@ -192,24 +184,15 @@ export default async function DashboardPage() {
             })
             .eq("id", user.id);
 
-          // Check and update license expiration if needed
-          if (license && stripeSubscription.status === 'active') {
-            license = await checkAndUpdateLicenseExpiration(supabase, license, subscription);
-          }
-          // If no license exists but subscription is active, create one
-          else if (!license && stripeSubscription.status === 'active') {
-            console.log('Active subscription found but no license exists. Generating license...');
-            const newLicense = await createLicenseForUser(
-              supabase,
+          // Always check and fix license if subscription is active
+          if (stripeSubscription.status === 'active') {
+            console.log('Active subscription found, checking/fixing license...');
+            license = await checkAndFixLicense(
               user.id,
               stripeSubscription.id,
-              stripeSubscription.current_period_end
+              new Date(stripeSubscription.current_period_end * 1000)
             );
-
-            if (newLicense) {
-              console.log('New license generated successfully:', newLicense);
-              license = newLicense;
-            }
+            console.log('License after check/fix:', license);
           }
         }
       } catch (error) {
