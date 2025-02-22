@@ -7,6 +7,13 @@ const config = {
   appDescription: "Your AI-Powered Study Companion - Transform your learning experience with intelligent clipboard management",
   // REQUIRED (no https://, not trialing slash at the end)
   domainName: "clipbrdapp.com",
+  // Hero section configuration
+  hero: {
+    slogan: "Your AI-Powered Study Companion",
+    description: "Transform your learning experience with intelligent clipboard management for your personal notes and files",
+    videoPath: "/demo/clipbrd-demo",
+    posterPath: "/demo/clipbrd-poster.png",
+  },
   crisp: {
     // Crisp website ID
     id: "",

@@ -1,0 +1,47 @@
+:root {
+  /* Animation durations */
+  --hero-animation-duration-mobile: 0.3s;
+  --hero-animation-duration-desktop: 0.5s;
+  --hero-letter-animation-duration-mobile: 0.2s;
+  --hero-letter-animation-duration-desktop: 0.3s;
+  --hero-floating-duration-mobile: 15s;
+  --hero-floating-duration-desktop: 20s;
+
+  /* Shadow effects */
+  --hero-shadow-color: rgba(98, 216, 255, 0.4);
+  --hero-shadow-hover-color: rgba(98, 216, 255, 0.6);
+  --hero-shadow-base: 0 0 25px var(--hero-shadow-color);
+  --hero-shadow-hover: 0 0 35px var(--hero-shadow-hover-color);
+
+  /* Blur effects */
+  --hero-blur-amount: 100px;
+  --hero-floating-blur: 3xl;
+
+  /* Spacing */
+  --hero-section-spacing: 4rem;
+  --hero-title-spacing: 2rem;
+  --hero-description-spacing: 1rem;
+  --hero-video-spacing: 4rem;
+
+  /* Font sizes */
+  --hero-title-size-mobile: 3rem;
+  --hero-title-size-desktop: 5rem;
+  --hero-description-size-mobile: 1.125rem;
+  --hero-description-size-desktop: 1.25rem;
+
+  /* Colors */
+  --hero-primary-opacity: 0.1;
+  --hero-secondary-opacity: 0.1;
+  --hero-accent-opacity: 0.1;
+  --hero-backdrop-opacity: 0.05;
+}
+
+/* Mobile-specific variables */
+@media (max-width: 768px) {
+  :root {
+    --hero-section-spacing: 2rem;
+    --hero-title-spacing: 1.5rem;
+    --hero-description-spacing: 0.75rem;
+    --hero-video-spacing: 2rem;
+  }
+} 

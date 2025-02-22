@@ -5,20 +5,18 @@ import { useState, useEffect, useRef } from "react";
 import config from "@/config";
 import ButtonCheckout from "./ButtonCheckout";
 
-// <Pricing/> displays the pricing plans for your app
-// It's your Stripe config in config.js.stripe.plans[] that will be used to display the plans
-// <ButtonCheckout /> renders a button that will redirect the user to Stripe checkout called the /api/stripe/create-checkout API endpoint with the correct priceId
-
+// Hook to track mouse position (only active on devices with a pointer)
 const useMousePosition = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
+    if (typeof window === "undefined" || !("addEventListener" in window)) return;
     const updateMousePosition = (e) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
 
-    window.addEventListener('mousemove', updateMousePosition);
-    return () => window.removeEventListener('mousemove', updateMousePosition);
+    window.addEventListener("mousemove", updateMousePosition);
+    return () => window.removeEventListener("mousemove", updateMousePosition);
   }, []);
 
   return mousePosition;
@@ -92,7 +90,7 @@ const PricingCard = ({ plan, index }) => {
 
     rotateX.set(-rotateXValue);
     rotateY.set(rotateYValue);
-  }, [mousePosition, isHovered]);
+  }, [mousePosition, isHovered, rotateX, rotateY]);
 
   useEffect(() => {
     if (isHovered) {
@@ -104,7 +102,7 @@ const PricingCard = ({ plan, index }) => {
       rotateX.set(0);
       rotateY.set(0);
     }
-  }, [isHovered]);
+  }, [isHovered, scale, brightness, rotateX, rotateY]);
 
   return (
     <motion.div
@@ -277,7 +275,7 @@ const Pricing = () => {
       {/* Multiple gradient layers for depth and reduced banding */}
       <div className="absolute inset-0">
         {/* Base gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0090FF]/15 via-[#00D1FF]/10 via-[#00E5FF]/8 to-[#0090FF]/5" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0090FF]/15 via-[#00D1FF]/10 via-[#00E5E5]/8 to-[#0090FF]/5" />
         
         {/* Radial gradients for depth */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(0,144,255,0.15),transparent_50%)]" />
