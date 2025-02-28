@@ -9,16 +9,22 @@ const isIOS = () => {
   return /iPad|iPhone|iPod/.test(navigator.userAgent);
 };
 
+// Simplified static element for iOS to avoid memory issues
+const StaticElement = ({ className }) => (
+  <div className={`absolute rounded-full opacity-20 mix-blend-screen ${className}`} />
+);
+
 const FloatingElement = ({ delay, className, hover = false }) => {
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [isIOSDevice] = useState(isIOS());
   const controls = useAnimationControls();
 
-  const animation = isIOSDevice
-    ? {
-        opacity: [0.15, 0.2, 0.15],
-      }
-    : isMobile
+  // For iOS, don't bother with animations - just return a static element
+  if (isIOSDevice) {
+    return <StaticElement className={className} />;
+  }
+
+  const animation = isMobile
     ? {
         opacity: [0.15, 0.2, 0.15],
         scale: 1,
@@ -30,27 +36,27 @@ const FloatingElement = ({ delay, className, hover = false }) => {
       };
 
   const transition = {
-    duration: isIOSDevice ? 10 : isMobile ? 15 : 20,
+    duration: isMobile ? 15 : 20,
     delay,
     repeat: Infinity,
     ease: "linear",
   };
 
-  const baseSize = isIOSDevice ? "5px" : "100%";
-  const scale = isIOSDevice ? 20 : 1;
+  const baseSize = "100%";
+  const scale = 1;
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: isIOSDevice ? scale : 0 }}
+      initial={{ opacity: 0, scale: 0 }}
       animate={animation}
       transition={transition}
       onMouseEnter={
-        !isMobile && !isIOSDevice && hover
+        !isMobile && hover
           ? () => controls.start({ scale: scale * 1.2, opacity: 0.3 })
           : undefined
       }
       onMouseLeave={
-        !isMobile && !isIOSDevice && hover
+        !isMobile && hover
           ? () => controls.start({ scale, opacity: 0.2 })
           : undefined
       }
@@ -58,7 +64,6 @@ const FloatingElement = ({ delay, className, hover = false }) => {
         width: baseSize,
         height: baseSize,
         scale,
-        filter: isIOSDevice ? "blur(30px)" : undefined,
       }}
       className={`absolute rounded-full mix-blend-screen transition-transform duration-300 ${className}`}
     />
@@ -69,17 +74,25 @@ export const FloatingElements = () => {
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [isIOSDevice] = useState(isIOS());
 
-  if (isMobile && !isIOSDevice) return null;
+  // For iOS, return a much simpler version with reduced effects
+  if (isIOSDevice) {
+    return (
+      <div className="absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute inset-0 bg-white/80" />
+        <StaticElement className="bg-primary/10 w-[100vw] h-[100vh] -top-[10vh] -left-[10vw]" />
+        <StaticElement className="bg-secondary/10 w-[100vw] h-[100vh] -top-[5vh] -right-[10vw]" />
+        <StaticElement className="bg-accent/10 w-[80vw] h-[80vh] top-[20vh] left-1/4" />
+      </div>
+    );
+  }
 
+  // For non-iOS mobile, don't render at all
+  if (isMobile) return null;
+
+  // For desktop, keep the full effect
   return (
     <div className="absolute inset-0 -z-10 overflow-hidden">
-      <div 
-        className="absolute inset-0" 
-        style={{
-          backdropFilter: isIOSDevice ? undefined : "blur(100px)",
-          backgroundColor: isIOSDevice ? "rgba(255, 255, 255, 0.8)" : undefined,
-        }}
-      />
+      <div className="absolute inset-0 backdrop-blur-[100px]" />
       <FloatingElement
         delay={0}
         className="bg-primary/10 w-[150vw] h-[150vh] -top-[50vh] -left-[50vw]"

@@ -33,25 +33,25 @@ export const getSEOTags = ({
       description: openGraph?.description || config.appDescription,
       url: openGraph?.url || `https://${config.domainName}/`,
       siteName: openGraph?.title || config.appName,
-      // If you add an opengraph-image.(jpg|jpeg|png|gif) image to the /app folder, you don't need the code below
-      // images: [
-      //   {
-      //     url: `https://${config.domainName}/share.png`,
-      //     width: 1200,
-      //     height: 660,
-      //   },
-      // ],
-      locale: "en_US",
+      // Using custom opengraph-image.png from /app folder
+      images: [
+        {
+          url: "/opengraph-image.png",
+          width: 1200,
+          height: 660,
+        },
+      ],
+      locale: "es_ES",
       type: "website",
     },
 
     twitter: {
       title: openGraph?.title || config.appName,
       description: openGraph?.description || config.appDescription,
-      // If you add an twitter-image.(jpg|jpeg|png|gif) image to the /app folder, you don't need the code below
-      // images: [openGraph?.image || defaults.og.image],
+      // Using the same image for Twitter cards
+      images: ["/opengraph-image.png"],
       card: "summary_large_image",
-      creator: "@marc_louvion",
+      creator: "@joseluissaorin",
     },
 
     // If a canonical URL is given, we add it. The metadataBase will turn the relative URL into a fully qualified URL
@@ -85,7 +85,7 @@ export const renderSchemaTags = () => {
           url: `https://${config.domainName}/`,
           author: {
             "@type": "Person",
-            name: "Marc Lou",
+            name: "José Luis Saorín",
           },
           datePublished: "2023-08-01",
           applicationCategory: "EducationalApplication",
@@ -97,8 +97,8 @@ export const renderSchemaTags = () => {
           offers: [
             {
               "@type": "Offer",
-              price: "9.00",
-              priceCurrency: "USD",
+              price: "3.99",
+              priceCurrency: "EUR",
             },
           ],
         }),

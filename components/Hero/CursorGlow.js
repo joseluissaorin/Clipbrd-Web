@@ -12,6 +12,15 @@ const isIOS = () => {
 export const CursorGlow = () => {
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [isIOSDevice] = useState(isIOS());
+  
+  // Exit early for mobile or iOS devices
+  if (isMobile || isIOSDevice) return null;
+
+  return <DesktopCursorGlow />;
+};
+
+// Separate component for desktop to avoid any setup code running on mobile/iOS
+const DesktopCursorGlow = () => {
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
 
@@ -20,17 +29,14 @@ export const CursorGlow = () => {
   const cursorYSpring = useSpring(cursorY, springConfig);
 
   useEffect(() => {
-    if (isMobile || isIOSDevice) return;
-
     const moveCursor = (e) => {
       cursorX.set(e.clientX - 150);
       cursorY.set(e.clientY - 150);
     };
+    
     window.addEventListener("mousemove", moveCursor);
     return () => window.removeEventListener("mousemove", moveCursor);
-  }, [cursorX, cursorY, isMobile, isIOSDevice]);
-
-  if (isMobile || isIOSDevice) return null;
+  }, [cursorX, cursorY]);
 
   return (
     <motion.div
