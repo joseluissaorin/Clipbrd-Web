@@ -86,6 +86,7 @@ export async function verifyHash(str, hashWithSalt) {
 }
 
 // Encrypt data for secure storage or transmission
+// In libs/security.js
 export async function encrypt(text) {
   if (!ENCRYPTION_KEY) throw new Error('Encryption key not set');
   
@@ -126,19 +127,25 @@ export async function encrypt(text) {
     data
   );
   
+  // Extract the encrypted data and auth tag for AES-GCM
+  const encryptedArray = new Uint8Array(encrypted);
+  const encryptedData = encryptedArray.slice(0, encryptedArray.length - AUTH_TAG_LENGTH);
+  const authTag = encryptedArray.slice(encryptedArray.length - AUTH_TAG_LENGTH);
+  
   return {
     iv: uint8ArrayToHex(iv),
-    encrypted: uint8ArrayToHex(new Uint8Array(encrypted))
+    encrypted: uint8ArrayToHex(encryptedData),
+    authTag: uint8ArrayToHex(authTag)
   };
 }
-
 // Decrypt previously encrypted data
-export async function decrypt(encryptedHex, ivHex) {
+export async function decrypt(encryptedHex, ivHex, authTagHex) {
   if (!ENCRYPTION_KEY) throw new Error('Encryption key not set');
   
   const encoder = new TextEncoder();
   const iv = hexToUint8Array(ivHex);
   const encrypted = hexToUint8Array(encryptedHex);
+  // Use auth tag if provided
   
   const keyMaterial = await crypto.subtle.importKey(
     'raw',
@@ -167,6 +174,7 @@ export async function decrypt(encryptedHex, ivHex) {
     ['decrypt']
   );
   
+  // For AES-GCM, you need to provide the auth tag with the encrypted data
   const decrypted = await crypto.subtle.decrypt(
     { name: ALGORITHM, iv },
     key,
@@ -176,7 +184,6 @@ export async function decrypt(encryptedHex, ivHex) {
   const decoder = new TextDecoder();
   return decoder.decode(decrypted);
 }
-
 // Generate a secure license key
 export async function generateLicenseKey() {
   let licenseKey;

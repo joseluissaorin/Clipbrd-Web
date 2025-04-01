@@ -90,8 +90,11 @@ export const OptimizedVideo = ({
 
     const handleCanPlay = () => {
       setIsLoading(false);
-      if (autoPlay && !isIOS && errorCount < maxErrorRetries) {
-        handlePlay();
+      if (autoPlay && errorCount < maxErrorRetries) {
+        // For iOS, we'll handle autoplay via user interaction instead
+        if (!isIOS) {
+          handlePlay();
+        }
       }
     };
 
@@ -164,16 +167,28 @@ export const OptimizedVideo = ({
     setError(null);
 
     try {
+      // For iOS, we set these properties and then attempt to play
       if (isIOS) {
-        // For iOS, ensure these properties are set directly on the element
         videoRef.current.playsInline = true;
         videoRef.current.muted = true;
+        videoRef.current.controls = controls;
         
-        // iOS requires interaction to play, so don't auto-attempt
-        // Just load the video ready for user interaction
+        // Ensure sources are set correctly
+        if (!videoRef.current.querySelector('source')) {
+          const webmSource = document.createElement('source');
+          webmSource.src = src;
+          webmSource.type = 'video/webm';
+          videoRef.current.appendChild(webmSource);
+          
+          if (fallbackSrc) {
+            const mp4Source = document.createElement('source');
+            mp4Source.src = fallbackSrc;
+            mp4Source.type = 'video/mp4';
+            videoRef.current.appendChild(mp4Source);
+          }
+        }
+        
         videoRef.current.load();
-        setIsLoading(false);
-        return;
       }
 
       const playPromise = videoRef.current.play();
@@ -186,7 +201,16 @@ export const OptimizedVideo = ({
           })
           .catch((error) => {
             console.error("Video playback error:", error);
-            debouncedHandleError("Failed to play video. Please try again.");
+            
+            // On iOS, autoplay often fails due to restrictions.
+            // We can show controls to let the user play manually
+            if (isIOS) {
+              videoRef.current.controls = true;
+              setIsLoading(false);
+              setShowThumbnail(false);
+            } else {
+              debouncedHandleError("Failed to play video. Please try again.");
+            }
           });
       }
     } catch (error) {
@@ -239,7 +263,7 @@ export const OptimizedVideo = ({
     }
   };
 
-  // For iOS, simplify the video UI significantly
+  // Updated iOS UI with working play button
   if (isIOS) {
     return (
       <div className={`${className} relative w-full h-full rounded-lg overflow-hidden`}>
@@ -255,8 +279,11 @@ export const OptimizedVideo = ({
               onError={() => setError("Failed to load thumbnail")}
             />
             {!error && (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-16 h-16 bg-black/50 rounded-full flex items-center justify-center">
+              <div 
+                className="absolute inset-0 flex items-center justify-center cursor-pointer"
+                onClick={handlePlay}
+              >
+                <div className="w-16 h-16 bg-black/50 rounded-full flex items-center justify-center hover:bg-black/70 transition-colors">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
@@ -275,6 +302,20 @@ export const OptimizedVideo = ({
           </div>
         )}
 
+        <video
+          ref={videoRef}
+          className={`w-full h-full object-cover rounded-lg ${!showThumbnail ? 'block' : 'hidden'}`}
+          poster={poster}
+          playsInline={true}
+          muted={true}
+          controls={!showThumbnail}
+          onClick={handleVideoClick}
+        >
+          <source src={src} type="video/webm" />
+          {fallbackSrc && <source src={fallbackSrc} type="video/mp4" />}
+          Your browser does not support the video tag.
+        </video>
+
         {error && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/50 rounded-lg">
             <p className="text-white mb-4">{error}</p>
@@ -286,6 +327,12 @@ export const OptimizedVideo = ({
                 Retry
               </button>
             )}
+          </div>
+        )}
+
+        {isLoading && !error && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/10 rounded-lg">
+            <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
           </div>
         )}
       </div>
@@ -319,7 +366,7 @@ export const OptimizedVideo = ({
             onError={() => setError("Failed to load thumbnail")}
           />
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-16 h-16 bg-black/50 rounded-full flex items-center justify-center">
+            <div className="w-16 h-16 bg-black/50 rounded-full flex items-center justify-center hover:bg-black/70 transition-colors">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -374,4 +421,4 @@ export const OptimizedVideo = ({
       )}
     </div>
   );
-}; 
+};
